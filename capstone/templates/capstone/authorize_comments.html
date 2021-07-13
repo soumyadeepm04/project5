@@ -1,0 +1,25 @@
+{% extends "capstone/layout.html" %}
+{% load static %}
+
+{% block script %}
+    <script src="{% static 'capstone/authorize.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+    <h4>Comments to authorize:</h4>
+    {% if comments_to_authorize %}
+        {% for comment_to_authorize in comments_to_authorize %}
+            {% for comment_event in comment_events %}
+                {% if comment_to_authorize.event_id == comment_event.id %}
+                    <div id="{{ comment_event.id }}">
+                        Event name: {{ comment_event.name }}<br>
+                        Comment: {{ comment_to_authorize.comment }}
+                        <div><button class = "authorize" data-comment = "{{ comment_to_authorize.comment }}" data-event_id="{{ comment_event.id }}">Authorize</button>   <button class = "reject" data-comment = "{{ comment_to_authorize.comment }}" data-event_id="{{ comment_event.id }}">Reject</button></div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    {% else %}
+        No comments to authorize
+    {% endif %}
+{% endblock %}

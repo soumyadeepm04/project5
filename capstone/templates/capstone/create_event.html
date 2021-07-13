@@ -1,0 +1,14 @@
+{% extends "capstone/layout.html" %}
+
+{% block body %}
+    <h4>Create Event</h4><br>
+    <form action="{% url 'create_event' %}" method="POST">
+        {% csrf_token %}
+        <div><input type="text" name="name" placeholder="Enter name of the event here" required></div>
+        <div><input type="date" name="date" placeholder="Enter the date of the event here" required></div>
+        <div><input type="time" name = "start_time" placeholder="Enter the start time of the event here" required><input type="time" placeholder="Enter the end time of the event here" name = "end_time" required></div>
+        <div><textarea name="description" placeholder="Enter the description of the event here" required></textarea></div>
+        <div><input type="text" name="venue" placeholder="Enter the venue here" required></div>
+        <div><input type="submit" value="Submit" required></div>
+    </form>
+{% endblock %}

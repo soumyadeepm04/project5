@@ -1,0 +1,38 @@
+{% extends "capstone/layout.html" %}
+
+{% block body %}
+
+    {% if upcoming_events %}
+        <h4>Upcoming Events</h4>
+    {% endif %}
+
+    {% for  upcoming_event in upcoming_events %}
+        <div style="border-style: solid;">
+            <div class="center-align"><a href = "{% url 'event' upcoming_event.id %}">{{ upcoming_event.name }}</a></div>
+            <div>About the event: {{ upcoming_event.description }}</div>
+        </div>
+    {% endfor %}
+
+    {% if today_events %}
+        <h4>Today's Events</h4>
+    {% endif %}
+
+    {% for  today_event in today_events %}
+        <div style="border-style: solid;">
+            <div class="center-align"><a href = "{% url 'event' today_event.id %}">{{ today_event.name }}</a></div>
+            <div>About the event: {{ today_event.description }}</div>
+        </div>
+    {% endfor %}
+
+    {% if past_events %}
+        <h4>Past Events</h4>
+    {% endif %}
+
+    {% for  past_event in past_events %}
+        <div style="border-style: solid;">
+            <div class="center-align"><a href = "{% url 'event' past_event.id %}">{{ past_event.name }}</a></div>
+            <div>About the event: {{ past_event.description }}</div>
+        </div>
+    {% endfor %}
+
+{% endblock %}
