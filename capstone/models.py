@@ -22,6 +22,10 @@ class Register(models.Model):
     registered_event_id = models.IntegerField(null=True)
     registered_user = models.ForeignKey("User", on_delete=models.CASCADE)
 
+class Favorites(models.Model):
+    event_id = models.IntegerField()
+    user_favorite = models.ForeignKey("User", on_delete=models.CASCADE)
+
 class Authorize(models.Model):
     comment = models.CharField(max_length=500)
     event_id = models.IntegerField()

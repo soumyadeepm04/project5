@@ -5,24 +5,33 @@
     <script src="{% static 'capstone/register.js' %}"></script>
     <script src="{% static 'capstone/comment.js' %}"></script>
     <script src="{% static 'capstone/edit.js' %}"></script>
+    <script src="{% static 'capstone/favorite.js' %}"></script>
 {% endblock %}
 
 {% block body %}
     <h4>Event Details</h4>
+
     <div style="padding: 50px;">
+
         <div>{{ event.name }}</div>
+
         <div id = "part_available_to_edit">
             <div>About the event: {{ event.description }}</div>
             <div>To be held on: {{ event.date }}. Venue: {{ event.venue }}</div>
             <div>From: {{ event.start_time }} To: {{ event.end_time }}</div>
         </div>
+
         <div id = "registered">Number of people registered for the event: {{ event.registered }}</div>
         <div><em>Event created on: {{ event.timestamp }}</em></div>
+
         <div>Register: <input type="checkbox" data-exists="{{ exists }}" data-id="{{ event.id }}" data-num_registered="{{ event.registered }}" id="register_checkbox"></div>
+
+        <div>In Favorites <input type = "checkbox" id = "favorite_checkbox" data-id="{{ event.id }}" data-exists="{{ favorite_exists }}"></div>
+
         {% if request.user == event.owner %}
             <div><a id = "link_edit" href = "#" role="button">Edit</a></div>
         {% endif %}
-        <div>In Favorites <input type = "checkbox" id = "favorite_checkbox"></div>
+
         <div id = "edit" style = "display: none;" data-id = "{{ event.id }}">
             <div><input type="text" name="name" placeholder="Enter name of the event here" required data-name="{{ event.name }}"></div>
             <div><input type="date" name="date" placeholder="Enter the date of the event here" required data-date="{{ event.date }}"></div>
@@ -31,11 +40,14 @@
             <div><input type="text" name="venue" placeholder="Enter the venue here" required data-venue="{{ event.venue }}"></div>
             <div><button>Submit</button></div>
         </div>
+
         <div id = "comment"><a href="#" role="button">Comment</a></div>
+
         <div id = "type_comment" style="display: none;" data-id="{{ event.id }}" data-owner="{{ event.owner }}">
             <div><textarea placeholder="Type your comment in here"></textarea></div>
             <div><button>Submit</button></div>
         </div>
+
         Comments:
         {% if comments %}
             <ul>
@@ -46,6 +58,7 @@
         {% else %}
             No comments yet
         {% endif %}
+
         <div>
             {% if request.user == event.owner %}
                 {% if registered_users %}

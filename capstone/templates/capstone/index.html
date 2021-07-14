@@ -1,6 +1,9 @@
 {% extends "capstone/layout.html" %}
 
 {% block body %}
+    {% if favorite %}
+        <div><h3>Favorite Events</h3></div>
+    {% endif %}
 
     {% if upcoming_events %}
         <h4>Upcoming Events</h4>

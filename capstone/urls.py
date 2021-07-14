@@ -15,5 +15,8 @@ urlpatterns = [
     path("authorize_comments", views.authorize_comments, name="authorize_comments"),
     path("authorize", views.authorize, name = "authorize"),
     path("reject", views.reject, name = "reject"),
-    path("edit/<int:event_id>", views.edit, name = "edit")
+    path("edit/<int:event_id>", views.edit, name = "edit"),
+    path("favorite/<int:event_id>", views.favorite, name = "favorite"),
+    path("unfavorite/<int:event_id>", views.unfavorite, name = "unfavorite"),
+    path("favorite_events", views.favorite_events, name = "favorite_events")
 ]

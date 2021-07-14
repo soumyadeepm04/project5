@@ -9,12 +9,11 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 import datetime
 
-from .models import Authorize, Authorized, Events, Register, User
+from .models import Authorize, Authorized, Events, Favorites, Register, User
 
 # Create your views here.
 
 def index(request):
-    events = Events.objects.all().order_by("date")
     upcoming_events = []
     today_events = []
     past_events = []
@@ -101,8 +100,12 @@ def event(request, event_id):
         exists = False
     comments = Authorized.objects.filter(event_id = event_id)
     registered_users = Register.objects.all()
+    if Favorites.objects.filter(event_id = event_id, user_favorite = request.user).exists():
+        favorite_exists = True
+    else:
+        favorite_exists = False
     return render(request, "capstone/event.html", {
-        "event":event, "exists":exists, "comments":comments, "request.user":request.user, "registered_users":registered_users
+        "event":event, "exists":exists, "comments":comments, "request.user":request.user, "registered_users":registered_users, "favorite_exists":favorite_exists
     })
 
 @csrf_exempt
@@ -185,3 +188,41 @@ def edit(request, event_id):
         event.venue = data["venue"]
         event.save()
         return HttpResponse(status = 204)
+
+@csrf_exempt
+@login_required
+def favorite(request, event_id):
+    Favorites.objects.create(event_id = event_id, user_favorite = request.user)
+    return HttpResponse(status = 204)
+
+@csrf_exempt
+@login_required
+def unfavorite(request, event_id):
+    Favorites.objects.get(event_id = event_id, user_favorite = request.user).delete()
+    return HttpResponse(status = 204)
+
+@login_required
+def favorite_events(request):
+    favorite_objects = Favorites.objects.filter(user_favorite = request.user)
+    event_ids = []
+    for favorite_object in favorite_objects:
+        event_ids.append(favorite_object.event_id)
+    
+    favorite_events = []
+    for event_id in event_ids:
+        favorite_events.extend(Events.objects.filter(pk = event_id))
+
+    upcoming_events = []
+    today_events = []
+    past_events = []
+    for favorite_event in favorite_events:
+        if favorite_event.date > datetime.datetime.now().date():
+            upcoming_events.append(favorite_event)
+        elif favorite_event.date == datetime.datetime.now().date():
+            today_events.append(favorite_event)
+        else:
+            past_events.append(favorite_event)
+    
+    return render(request, "capstone/index.html", {
+        "upcoming_events":upcoming_events, "today_events":today_events, "past_events":past_events, "favorite":True
+    })
