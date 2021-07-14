@@ -48,6 +48,13 @@
             <div><button>Submit</button></div>
         </div>
 
+        {% if request.user == event.owner %}
+            <form action="{% url 'delete_event' event.id %}" method = "POST">
+                {% csrf_token %}
+                <input type="submit" value="Delete Event">
+            </form>
+        {% endif %}
+        
         Comments:
         {% if comments %}
             <ul>

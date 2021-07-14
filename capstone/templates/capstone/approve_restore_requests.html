@@ -1,0 +1,19 @@
+{% extends "capstone/layout.html" %}
+{% load static %}
+
+{% block script %}
+<script src="{% static 'capstone/approve.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+    {% for event in events_for_approval %}
+        <div id = "{{ event.id }}">
+            <div>{{ event.name }}</div>
+            <div>About the event: {{ event.description }}</div>
+            <div>To be held on: {{ event.date }}. Venue: {{ event.venue }}</div>
+            <div>From: {{ event.start_time }} To: {{ event.end_time }}</div>
+            <div><em>Event created on: {{ event.timestamp }}</em></div>
+            <div><button class="approve" data-id="{{ event.id }}">Approve</button><button class = "reject" data-id="{{ event.id }}">Reject</button></div>
+        </div>
+    {% endfor %}
+{% endblock %}

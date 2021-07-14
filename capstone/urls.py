@@ -18,5 +18,12 @@ urlpatterns = [
     path("edit/<int:event_id>", views.edit, name = "edit"),
     path("favorite/<int:event_id>", views.favorite, name = "favorite"),
     path("unfavorite/<int:event_id>", views.unfavorite, name = "unfavorite"),
-    path("favorite_events", views.favorite_events, name = "favorite_events")
+    path("favorite_events", views.favorite_events, name = "favorite_events"),
+    path("delete_event/<int:event_id>", views.delete_event, name = "delete_event"),
+    path("deleted_events", views.deleted_events, name = "deleted_events"),
+    path("restore_approval/<int:event_id>", views.restore_approval, name = "restore_approval"),
+    path("remove_approval/<int:event_id>", views.remove_approval, name = "remove_approval"),
+    path("approve_restore_requests", views.approve_restore_requests, name = "approve_restore_requests"),
+    path("approve_restoration/<int:event_id>", views.approve_restoration, name="approve_restoration"),
+    path("reject_restoration/<int:event_id>", views.reject_restoration, name="reject_restoration")
 ]

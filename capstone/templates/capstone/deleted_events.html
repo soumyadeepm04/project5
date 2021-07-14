@@ -1,0 +1,25 @@
+{% extends "capstone/layout.html" %}
+{% load static %}
+
+{% block script %}
+<script src="{% static 'capstone/restore.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+    {% if deleted_events %}
+        {% for deleted_event in deleted_events %}
+            <div>{{ deleted_event.name }}</div>
+            <div>About the event: {{ deleted_event.description }}</div>
+            <div>To be held on: {{ deleted_event.date }}. Venue: {{ deleted_event.venue }}</div>
+            <div>From: {{ deleted_event.start_time }} To: {{ deleted_event.end_time }}</div>
+            <div><em>Event created on: {{ deleted_event.timestamp }}</em></div>
+            {% if deleted_event in events_for_approval %}
+                Restore Event: <input type = "checkbox" class = "checkbox" data-id="{{ deleted_event.id }}" data-exists="true">
+            {% else %}
+                Restore Event: <input type = "checkbox" class = "checkbox" data-id="{{ deleted_event.id }}" data-exists="false">
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        No deleted events
+    {% endif %}
+{% endblock %}

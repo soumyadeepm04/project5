@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 import datetime
 
-from .models import Authorize, Authorized, Events, Favorites, Register, User
+from .models import Authorize, Authorized, Events, Favorites, Register, Restore_Approvals, User
 
 # Create your views here.
 
@@ -17,9 +17,9 @@ def index(request):
     upcoming_events = []
     today_events = []
     past_events = []
-    upcoming_events.extend(Events.objects.filter(date__gt = datetime.datetime.now().date()))
-    today_events.extend(Events.objects.filter(date = datetime.datetime.now().date()))
-    past_events.extend(Events.objects.filter(date__lt = datetime.datetime.now().date()))
+    upcoming_events.extend(Events.objects.filter(date__gt = datetime.datetime.now().date(), soft_delete = False))
+    today_events.extend(Events.objects.filter(date = datetime.datetime.now().date(), soft_delete = False))
+    past_events.extend(Events.objects.filter(date__lt = datetime.datetime.now().date(), soft_delete = False))
 
     return render(request, "capstone/index.html", {
         "upcoming_events":upcoming_events, "today_events":today_events, "past_events":past_events
@@ -86,7 +86,7 @@ def create_event(request):
         end_time = request.POST["end_time"]
         description = request.POST["description"]
         venue = request.POST["venue"]
-        Events.objects.create(owner = owner, name = name, date = date, start_time = start_time, end_time = end_time, description = description, venue = venue, registered = 0)
+        Events.objects.create(owner = owner, name = name, date = date, start_time = start_time, end_time = end_time, description = description, venue = venue, registered = 0, soft_delete = False)
         return HttpResponseRedirect(reverse("index"))
     
     return render(request, "capstone/create_event.html")
@@ -226,3 +226,67 @@ def favorite_events(request):
     return render(request, "capstone/index.html", {
         "upcoming_events":upcoming_events, "today_events":today_events, "past_events":past_events, "favorite":True
     })
+
+@login_required
+def delete_event(request, event_id):
+    event = Events.objects.get(pk = event_id)
+    event.soft_delete = True
+    event.registered = 0
+    event.save()
+    Register.objects.filter(registered_event_id = event_id).delete()
+    Favorites.objects.filter(event_id = event_id).delete()
+    return HttpResponseRedirect(reverse("index"))
+
+@login_required
+def deleted_events(request):
+    deleted_events = Events.objects.filter(owner = request.user, soft_delete = True)
+    objects_for_approval = Restore_Approvals.objects.all()
+    events_ids = []
+    for object_for_approval in objects_for_approval:
+        events_ids.append(object_for_approval.event_id)
+    events_for_approval = []
+    for event_id in events_ids:
+        events_for_approval.extend(Events.objects.filter(pk = event_id))
+    return render(request, "capstone/deleted_events.html", {
+        "deleted_events":deleted_events, "events_for_approval":events_for_approval
+    })
+
+@csrf_exempt
+@login_required
+def restore_approval(request, event_id):
+    Restore_Approvals.objects.create(event_id = event_id)
+    return HttpResponse(status = 204)
+
+@csrf_exempt
+@login_required
+def remove_approval(request, event_id):
+    Restore_Approvals.objects.filter(event_id = event_id).delete()
+    return HttpResponse(status = 204)
+
+@login_required
+def approve_restore_requests(request):
+    objects_for_approval = Restore_Approvals.objects.all()
+    events_ids = []
+    for object_for_approval in objects_for_approval:
+        events_ids.append(object_for_approval.event_id)
+    events_for_approval = []
+    for event_id in events_ids:
+        events_for_approval.extend(Events.objects.filter(pk = event_id))
+    return render(request, "capstone/approve_restore_requests.html", {
+        "events_for_approval":events_for_approval
+    })
+
+@csrf_exempt
+@login_required
+def approve_restoration(request, event_id):
+    Restore_Approvals.objects.get(event_id = event_id).delete()
+    event = Events.objects.get(pk = event_id)
+    event.soft_delete = False
+    event.save()
+    return HttpResponse(status = 204)
+
+@csrf_exempt
+@login_required
+def reject_restoration(request, event_id):
+    Restore_Approvals.objects.get(event_id = event_id).delete()
+    return HttpResponse(status = 204)
