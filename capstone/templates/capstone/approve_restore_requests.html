@@ -13,7 +13,7 @@
             <div>To be held on: {{ event.date }}. Venue: {{ event.venue }}</div>
             <div>From: {{ event.start_time }} To: {{ event.end_time }}</div>
             <div><em>Event created on: {{ event.timestamp }}</em></div>
-            <div><button class="approve" data-id="{{ event.id }}">Approve</button><button class = "reject" data-id="{{ event.id }}">Reject</button></div>
+            <div><button class="approve" data-id="{{ event.id }}">Approve</button>   <button class = "reject" data-id="{{ event.id }}">Reject</button></div>
         </div>
     {% endfor %}
 {% endblock %}
