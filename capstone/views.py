@@ -76,7 +76,7 @@ def register(request):
     else:
         return render(request, "capstone/register.html")
 
-@login_required
+@login_required(login_url='login')
 def create_event(request):
     if request.method == "POST":
         owner = request.user
@@ -91,7 +91,7 @@ def create_event(request):
     
     return render(request, "capstone/create_event.html")
 
-@login_required
+@login_required(login_url='login')
 def event(request, event_id):
     event = Events.objects.get(pk = event_id)
     if Register.objects.filter(registered_event_id = event_id, registered_user = request.user).exists():
@@ -109,7 +109,7 @@ def event(request, event_id):
     })
 
 @csrf_exempt
-@login_required
+@login_required(login_url='login')
 def register_event(request, event_id):
     if request.method == 'POST':
         Register.objects.create(registered_event_id = event_id, registered_user = request.user)
@@ -119,7 +119,7 @@ def register_event(request, event_id):
         return HttpResponse(status = 204)
 
 @csrf_exempt
-@login_required
+@login_required(login_url='login')
 def unregister_event(request, event_id):
     if request.method == 'POST':
         Register.objects.get(registered_event_id = event_id, registered_user = request.user).delete()
@@ -129,7 +129,7 @@ def unregister_event(request, event_id):
         return HttpResponse(status = 204)
 
 @csrf_exempt
-@login_required
+@login_required(login_url='login')
 def comment(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -139,7 +139,7 @@ def comment(request):
         Authorize.objects.create(event_id = event_id, comment = comment, event_owner = event_owner)
         return HttpResponse(status = 204)
 
-@login_required
+@login_required(login_url='login')
 def authorize_comments(request):
     comments_to_authorize = Authorize.objects.filter(event_owner = request.user)
     comments_user = Authorize.objects.filter(event_owner = request.user)
@@ -154,7 +154,7 @@ def authorize_comments(request):
     })
 
 @csrf_exempt
-@login_required
+@login_required(login_url='login')
 def authorize(request):
     if request.method == 'PUT':
         data = json.loads(request.body)
@@ -165,7 +165,7 @@ def authorize(request):
         return HttpResponse(status = 204)
 
 @csrf_exempt
-@login_required
+@login_required(login_url='login')
 def reject(request):
     if request.method == 'PUT':
         data = json.loads(request.body)
@@ -175,7 +175,7 @@ def reject(request):
         return HttpResponse(status = 204)
 
 @csrf_exempt
-@login_required
+@login_required(login_url='login')
 def edit(request, event_id):
     if request.method == 'PUT':
         data = json.loads(request.body)
@@ -190,18 +190,18 @@ def edit(request, event_id):
         return HttpResponse(status = 204)
 
 @csrf_exempt
-@login_required
+@login_required(login_url='login')
 def favorite(request, event_id):
     Favorites.objects.create(event_id = event_id, user_favorite = request.user)
     return HttpResponse(status = 204)
 
 @csrf_exempt
-@login_required
+@login_required(login_url='login')
 def unfavorite(request, event_id):
     Favorites.objects.get(event_id = event_id, user_favorite = request.user).delete()
     return HttpResponse(status = 204)
 
-@login_required
+@login_required(login_url='login')
 def favorite_events(request):
     favorite_objects = Favorites.objects.filter(user_favorite = request.user)
     event_ids = []
@@ -227,7 +227,7 @@ def favorite_events(request):
         "upcoming_events":upcoming_events, "today_events":today_events, "past_events":past_events, "favorite":True
     })
 
-@login_required
+@login_required(login_url='login')
 def delete_event(request, event_id):
     event = Events.objects.get(pk = event_id)
     event.soft_delete = True
@@ -237,7 +237,7 @@ def delete_event(request, event_id):
     Favorites.objects.filter(event_id = event_id).delete()
     return HttpResponseRedirect(reverse("index"))
 
-@login_required
+@login_required(login_url='login')
 def deleted_events(request):
     deleted_events = Events.objects.filter(owner = request.user, soft_delete = True)
     objects_for_approval = Restore_Approvals.objects.all()
@@ -252,18 +252,18 @@ def deleted_events(request):
     })
 
 @csrf_exempt
-@login_required
+@login_required(login_url='login')
 def restore_approval(request, event_id):
     Restore_Approvals.objects.create(event_id = event_id)
     return HttpResponse(status = 204)
 
 @csrf_exempt
-@login_required
+@login_required(login_url='login')
 def remove_approval(request, event_id):
     Restore_Approvals.objects.filter(event_id = event_id).delete()
     return HttpResponse(status = 204)
 
-@login_required
+@login_required(login_url='login')
 def approve_restore_requests(request):
     objects_for_approval = Restore_Approvals.objects.all()
     events_ids = []
@@ -277,7 +277,7 @@ def approve_restore_requests(request):
     })
 
 @csrf_exempt
-@login_required
+@login_required(login_url='login')
 def approve_restoration(request, event_id):
     Restore_Approvals.objects.get(event_id = event_id).delete()
     event = Events.objects.get(pk = event_id)
@@ -286,7 +286,7 @@ def approve_restoration(request, event_id):
     return HttpResponse(status = 204)
 
 @csrf_exempt
-@login_required
+@login_required(login_url='login')
 def reject_restoration(request, event_id):
     Restore_Approvals.objects.get(event_id = event_id).delete()
     return HttpResponse(status = 204)
