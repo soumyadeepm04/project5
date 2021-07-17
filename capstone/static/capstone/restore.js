@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 fetch(`/restore_approval/${element.dataset.id}`, {
                     method: 'POST'
                 })
+                alert('Your event will be restored after it is approved by the admin!');
             }
             else{
                 fetch(`/remove_approval/${element.dataset.id}`, {
