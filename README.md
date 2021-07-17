@@ -3,14 +3,14 @@
 This is an application for managing Events where a user can create, read, edit, delete,
 and restore events. An Event is an entity that occurs over a period in a day. Apart from
 the other static attributes like Name, Description etc., it has a dynamic a dynamic
-attribute viz. Status which is calculated on the fly based on the Event data and current
+attribute viz. Status, which is calculated on the fly based on the Event data and current
 date. The three values of Status are as follows:
 1. Upcoming Event – Events with their date attribute in future.
 2. Today’s Evens – Events with their date attribute in future.
 3. Past Event – Events with their date attribute in future.
 
 It is distinct compared to other projects in the course along the following lines:
-1. Dynamic attribute - Events are grouped by the dynamic attribute viz. Status. (Upcoming, today's, and past events respectively)
+1. Dynamic attribute - Events are grouped by the dynamic attribute viz. Status
 2. Approval process - Comments posted on an Event will have to be
 authorized/approved by the owner of the Event before they get published.
 3. Soft delete and restoration - Event owners have the option to delete the Events
@@ -98,5 +98,3 @@ and efficiently while the students would find it much less hassle free to track 
 they are a part of. This application could be enhanced and refined further to suit
 customized requirements from schools and help them become much more productive
 on Event Management.
-
-## Happy 
